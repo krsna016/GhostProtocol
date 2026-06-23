@@ -158,8 +158,8 @@ class GhostProtocolApp:
         self.opt_ble_kill = tk.BooleanVar(value=True)
         tk.Checkbutton(control_frame, text="[V3] Radio Triangulation Blackout (BLE/AirDrop)", variable=self.opt_ble_kill, font=("Menlo", 14, "bold"), bg="#020202", fg="#ff00ff", selectcolor="#111111", activebackground="#020202", activeforeground="#ff99ff").grid(row=5, column=0, columnspan=2, sticky="w", pady=6)
 
-        self.opt_dpi = tk.BooleanVar(value=True)
-        tk.Checkbutton(control_frame, text="[V3] Deep Packet Disguise (obfs4 Transports)", variable=self.opt_dpi, font=("Menlo", 14, "bold"), bg="#020202", fg="#ff00ff", selectcolor="#111111", activebackground="#020202", activeforeground="#ff99ff").grid(row=6, column=0, columnspan=2, sticky="w", pady=6)
+        self.opt_dpi = tk.BooleanVar(value=False)
+        tk.Checkbutton(control_frame, text="[V3] Deep Packet Disguise (obfs4 Transports)", variable=self.opt_dpi, font=("Menlo", 14, "bold"), bg="#020202", fg="#ff00ff", selectcolor="#111111", activebackground="#020202", activeforeground="#ff99ff").grid(row=6, column=0, columnspan=2, sticky="w", pady=4)
 
         # Progress Bar
         self.progress = ttk.Progressbar(self.root, style="Neon.Horizontal.TProgressbar", orient="horizontal", mode="determinate")
@@ -240,6 +240,7 @@ class GhostProtocolApp:
         config += "AvoidDiskWrites 1\n"
         config += "CircuitBuildTimeout 15\n"
         config += "NumEntryGuards 4\n"
+        config += "ExcludeNodes {ru},{cn},{ir},{kp},{sy},{cu}\n"
         
         if self.opt_dpi.get():
             config += "ClientTransportPlugin obfs4 exec /opt/homebrew/bin/obfs4proxy\n"
