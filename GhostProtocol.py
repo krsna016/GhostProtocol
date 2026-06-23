@@ -175,7 +175,7 @@ class GhostProtocolApp:
             
         if self.opt_host.get():
             scramble = "GHOST-" + ''.join(random.choices(string.ascii_uppercase + string.digits, k=5))
-            cmd += f"scutil --set ComputerName \"{scramble}\"; scutil --set LocalHostName \"{scramble}\"; scutil --set HostName \"{scramble}\"; "
+            cmd += f"/usr/sbin/scutil --set ComputerName \"{scramble}\"; /usr/sbin/scutil --set LocalHostName \"{scramble}\"; /usr/sbin/scutil --set HostName \"{scramble}\"; "
             self.log(f"Scrambling Hostname to: {scramble}")
 
         self.log("Authenticating master system override...")
@@ -211,10 +211,10 @@ class GhostProtocolApp:
                f"/usr/sbin/networksetup -setdnsservers \"Wi-Fi\" \"Empty\"; "
                f"/usr/sbin/systemsetup -settimezone Asia/Calcutta; "
                f"/usr/sbin/systemsetup -setusingnetworktime on; "
-               f"scutil --set ComputerName \"{self.original_hostname}\"; "
-               f"scutil --set LocalHostName \"{self.original_hostname}\"; "
-               f"scutil --set HostName \"{self.original_hostname}\"; "
-               f"dscacheutil -flushcache; killall -HUP mDNSResponder")
+               f"/usr/sbin/scutil --set ComputerName \"{self.original_hostname}\"; "
+               f"/usr/sbin/scutil --set LocalHostName \"{self.original_hostname}\"; "
+               f"/usr/sbin/scutil --set HostName \"{self.original_hostname}\"; "
+               f"/usr/bin/dscacheutil -flushcache; /usr/bin/killall -HUP mDNSResponder")
         
         success = self.run_admin_command(cmd)
         
