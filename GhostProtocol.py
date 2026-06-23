@@ -167,15 +167,15 @@ class GhostProtocolApp:
         
         # Build master command
         cmd = f"/usr/sbin/systemsetup -setusingnetworktime off; /usr/sbin/systemsetup -settimezone {target_info['tz']}; "
-        cmd += f"/usr/sbin/networksetup -setsocksfirewallproxy \"Wi-Fi\" 127.0.0.1 9050; /usr/sbin/networksetup -setsocksfirewallproxystate \"Wi-Fi\" on; "
+        cmd += f"/usr/sbin/networksetup -setsocksfirewallproxy 'Wi-Fi' 127.0.0.1 9050; /usr/sbin/networksetup -setsocksfirewallproxystate 'Wi-Fi' on; "
         
         if self.opt_dns.get():
-            cmd += f"/usr/sbin/networksetup -setdnsservers \"Wi-Fi\" 1.1.1.1 1.0.0.1; "
+            cmd += f"/usr/sbin/networksetup -setdnsservers 'Wi-Fi' 1.1.1.1 1.0.0.1; "
             self.log("Injecting Encrypted Cloudflare DNS...")
             
         if self.opt_host.get():
             scramble = "GHOST-" + ''.join(random.choices(string.ascii_uppercase + string.digits, k=5))
-            cmd += f"/usr/sbin/scutil --set ComputerName \"{scramble}\"; /usr/sbin/scutil --set LocalHostName \"{scramble}\"; /usr/sbin/scutil --set HostName \"{scramble}\"; "
+            cmd += f"/usr/sbin/scutil --set ComputerName '{scramble}'; /usr/sbin/scutil --set LocalHostName '{scramble}'; /usr/sbin/scutil --set HostName '{scramble}'; "
             self.log(f"Scrambling Hostname to: {scramble}")
 
         self.log("Authenticating master system override...")
@@ -207,13 +207,13 @@ class GhostProtocolApp:
         
         os.system("killall tor 2>/dev/null")
         
-        cmd = (f"/usr/sbin/networksetup -setsocksfirewallproxystate \"Wi-Fi\" off; "
-               f"/usr/sbin/networksetup -setdnsservers \"Wi-Fi\" \"Empty\"; "
+        cmd = (f"/usr/sbin/networksetup -setsocksfirewallproxystate 'Wi-Fi' off; "
+               f"/usr/sbin/networksetup -setdnsservers 'Wi-Fi' 'Empty'; "
                f"/usr/sbin/systemsetup -settimezone Asia/Calcutta; "
                f"/usr/sbin/systemsetup -setusingnetworktime on; "
-               f"/usr/sbin/scutil --set ComputerName \"{self.original_hostname}\"; "
-               f"/usr/sbin/scutil --set LocalHostName \"{self.original_hostname}\"; "
-               f"/usr/sbin/scutil --set HostName \"{self.original_hostname}\"; "
+               f"/usr/sbin/scutil --set ComputerName '{self.original_hostname}'; "
+               f"/usr/sbin/scutil --set LocalHostName '{self.original_hostname}'; "
+               f"/usr/sbin/scutil --set HostName '{self.original_hostname}'; "
                f"/usr/bin/dscacheutil -flushcache; /usr/bin/killall -HUP mDNSResponder")
         
         success = self.run_admin_command(cmd)
