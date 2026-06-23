@@ -10,15 +10,15 @@ import string
 class GhostProtocolApp:
     def __init__(self, root):
         self.root = root
-        self.root.title("GHOST PROTOCOL V4 - ARCHITECT LEVEL")
-        self.root.geometry("1250x1250")
+        self.root.title("GHOST PROTOCOL V3 - ULTIMATE OPSEC")
+        self.root.geometry("1100x1000")
         self.root.configure(bg="#020202")
         
         screen_width = self.root.winfo_screenwidth()
         screen_height = self.root.winfo_screenheight()
-        x = int((screen_width / 2) - (1250 / 2))
-        y = int((screen_height / 2) - (1250 / 2))
-        self.root.geometry(f"1250x1250+{x}+{y}")
+        x = int((screen_width / 2) - (1100 / 2))
+        y = int((screen_height / 2) - (1000 / 2))
+        self.root.geometry(f"1100x1000+{x}+{y}")
         
         self.regions = {
             "Original (Restore)": {"tz": "Asia/Calcutta", "cc": "restore"},
@@ -115,37 +115,21 @@ class GhostProtocolApp:
         header.pack(pady=(10, 0))
         
         # Blinking Global Status Indicator
-        self.global_status = tk.Label(self.root, text="● SYSTEM OFFLINE", font=("Menlo", 22, "bold"), fg="#ff3333", bg="#020202")
-        self.global_status.pack(pady=(0, 15))
+        self.global_status = tk.Label(self.root, text="● SYSTEM OFFLINE", font=("Menlo", 20, "bold"), fg="#ff3333", bg="#020202")
+        self.global_status.pack(pady=(0, 20))
         
-        # Telemetry Dashboard HUD
+        # Status Dashboard HUD
         status_frame = tk.Frame(self.root, bg="#0a0a0a", highlightbackground="#00ffcc", highlightthickness=2)
-        status_frame.pack(fill="x", padx=40, pady=5)
+        status_frame.pack(fill="x", padx=50, pady=5)
         
-        # Left Side HUD (Routing)
-        hud_left = tk.Frame(status_frame, bg="#0a0a0a")
-        hud_left.pack(side="left", fill="both", expand=True)
+        self.net_label = tk.Label(status_frame, text="[►] Routing Vector : DIRECT CONNECTION", font=("Menlo", 15, "bold"), fg="#888888", bg="#0a0a0a")
+        self.net_label.pack(anchor="w", padx=25, pady=8)
         
-        self.net_label = tk.Label(hud_left, text="[►] Routing Vector : DIRECT CONNECTION", font=("Menlo", 14, "bold"), fg="#888888", bg="#0a0a0a")
-        self.net_label.pack(anchor="w", padx=20, pady=(10, 2))
+        self.tz_label = tk.Label(status_frame, text="[►] System Timezone: Scanning...", font=("Menlo", 15, "bold"), fg="#888888", bg="#0a0a0a")
+        self.tz_label.pack(anchor="w", padx=25, pady=2)
         
-        self.tz_label = tk.Label(hud_left, text="[►] System Timezone: Scanning...", font=("Menlo", 14, "bold"), fg="#888888", bg="#0a0a0a")
-        self.tz_label.pack(anchor="w", padx=20, pady=2)
-        
-        self.host_label = tk.Label(hud_left, text=f"[►] Node Hostname  : {self.original_hostname}", font=("Menlo", 14, "bold"), fg="#888888", bg="#0a0a0a")
-        self.host_label.pack(anchor="w", padx=20, pady=(2, 10))
-        
-        # Right Side HUD (Telemetry)
-        hud_right = tk.Frame(status_frame, bg="#0a0a0a")
-        hud_right.pack(side="right", fill="both", expand=True)
-        
-        self.tx_label = tk.Label(hud_right, text="TX [UP]  : 0.00 KB/s", font=("Menlo", 14, "bold"), fg="#00ffcc", bg="#0a0a0a")
-        self.tx_label.pack(anchor="e", padx=20, pady=(15, 2))
-        
-        self.rx_label = tk.Label(hud_right, text="RX [DWN] : 0.00 KB/s", font=("Menlo", 14, "bold"), fg="#ff00ff", bg="#0a0a0a")
-        self.rx_label.pack(anchor="e", padx=20, pady=(2, 15))
-        
-        # Removed old single-column HUD elements as they are now merged into the dual-pane HUD above
+        self.host_label = tk.Label(status_frame, text=f"[►] Node Hostname  : {self.original_hostname}", font=("Menlo", 15, "bold"), fg="#888888", bg="#0a0a0a")
+        self.host_label.pack(anchor="w", padx=25, pady=(2, 8))
         
         # Controls Dashboard
         control_frame = tk.Frame(self.root, bg="#020202")
@@ -172,16 +156,10 @@ class GhostProtocolApp:
         tk.Checkbutton(control_frame, text="[V3] Hardware Decapitation (Camera/Mic Blackout)", variable=self.opt_hw_kill, font=("Menlo", 14, "bold"), bg="#020202", fg="#ff00ff", selectcolor="#111111", activebackground="#020202", activeforeground="#ff99ff").grid(row=4, column=0, columnspan=2, sticky="w", pady=6)
 
         self.opt_ble_kill = tk.BooleanVar(value=True)
-        tk.Checkbutton(control_frame, text="[V3] Radio Triangulation Blackout (BLE/AirDrop)", variable=self.opt_ble_kill, font=("Menlo", 14, "bold"), bg="#020202", fg="#ff00ff", selectcolor="#111111", activebackground="#020202", activeforeground="#ff99ff").grid(row=5, column=0, columnspan=2, sticky="w", pady=4)
+        tk.Checkbutton(control_frame, text="[V3] Radio Triangulation Blackout (BLE/AirDrop)", variable=self.opt_ble_kill, font=("Menlo", 14, "bold"), bg="#020202", fg="#ff00ff", selectcolor="#111111", activebackground="#020202", activeforeground="#ff99ff").grid(row=5, column=0, columnspan=2, sticky="w", pady=6)
 
         self.opt_dpi = tk.BooleanVar(value=True)
-        tk.Checkbutton(control_frame, text="[V3] Deep Packet Disguise (obfs4 Transports)", variable=self.opt_dpi, font=("Menlo", 14, "bold"), bg="#020202", fg="#ff00ff", selectcolor="#111111", activebackground="#020202", activeforeground="#ff99ff").grid(row=6, column=0, columnspan=2, sticky="w", pady=4)
-        
-        self.opt_pf = tk.BooleanVar(value=True)
-        tk.Checkbutton(control_frame, text="[V4] Strict PF Kernel Firewall (Drop all non-Tor traffic)", variable=self.opt_pf, font=("Menlo", 14, "bold"), bg="#020202", fg="#ffff00", selectcolor="#111111", activebackground="#020202", activeforeground="#ffffff").grid(row=7, column=0, columnspan=2, sticky="w", pady=4)
-        
-        self.opt_sinkhole = tk.BooleanVar(value=True)
-        tk.Checkbutton(control_frame, text="[V4] Localized DNS Sinkhole (Ad/Telemetry Blackhole)", variable=self.opt_sinkhole, font=("Menlo", 14, "bold"), bg="#020202", fg="#ffff00", selectcolor="#111111", activebackground="#020202", activeforeground="#ffffff").grid(row=8, column=0, columnspan=2, sticky="w", pady=4)
+        tk.Checkbutton(control_frame, text="[V3] Deep Packet Disguise (obfs4 Transports)", variable=self.opt_dpi, font=("Menlo", 14, "bold"), bg="#020202", fg="#ff00ff", selectcolor="#111111", activebackground="#020202", activeforeground="#ff99ff").grid(row=6, column=0, columnspan=2, sticky="w", pady=6)
 
         # Progress Bar
         self.progress = ttk.Progressbar(self.root, style="Neon.Horizontal.TProgressbar", orient="horizontal", mode="determinate")
@@ -270,29 +248,6 @@ class GhostProtocolApp:
                 os.system("/usr/sbin/networksetup -setairportpower en0 off")
                 self.killswitch_active = False
                 break
-                
-    def monitor_telemetry(self):
-        self.telemetry_active = True
-        while self.telemetry_active:
-            try:
-                # Poll macOS netstat for active Tor socket bytes
-                netstat = subprocess.check_output("netstat -ib | grep en0", shell=True).decode('utf-8').splitlines()[0].split()
-                rx_bytes = int(netstat[6])
-                tx_bytes = int(netstat[9])
-                
-                time.sleep(1)
-                
-                netstat_new = subprocess.check_output("netstat -ib | grep en0", shell=True).decode('utf-8').splitlines()[0].split()
-                rx_new = int(netstat_new[6])
-                tx_new = int(netstat_new[9])
-                
-                rx_speed = (rx_new - rx_bytes) / 1024.0
-                tx_speed = (tx_new - tx_bytes) / 1024.0
-                
-                self.rx_label.config(text=f"RX [DWN] : {rx_speed:.2f} KB/s")
-                self.tx_label.config(text=f"TX [UP]  : {tx_speed:.2f} KB/s")
-            except:
-                pass
 
     def start_spoofing(self):
         threading.Thread(target=self._spoof_process, daemon=True).start()
@@ -355,19 +310,6 @@ class GhostProtocolApp:
         if self.opt_ble_kill.get():
             cmd += f"defaults write /Library/Preferences/com.apple.Bluetooth ControllerPowerState -int 0; /usr/bin/killall blued 2>/dev/null; /usr/bin/killall sharingd 2>/dev/null; "
             self.log("[HW] Radio Silence: Bluetooth & AirDrop beacons massacred.")
-            
-        if self.opt_sinkhole.get():
-            # Injecting 0.0.0.0 routing for major tracker domains into /etc/hosts
-            sinkhole_domains = ["google-analytics.com", "doubleclick.net", "facebook.com", "connect.facebook.net", "telemetry.apple.com"]
-            hosts_injection = "\\n".join([f"0.0.0.0 {d}" for d in sinkhole_domains])
-            cmd += f"echo '{hosts_injection}' >> /etc/hosts; "
-            self.log("[SYS] Localized DNS Sinkhole activated. Ad/Tracker telemetry blackholed.")
-            
-        if self.opt_pf.get():
-            # Generate strict PF rules dropping all traffic not destined for Tor, but whitelisting the local loopback so apps can talk to the proxy
-            pf_rule = "set skip on lo0\\nblock drop all\\npass out on en0 inet proto tcp from any to any port {80, 443, 9001, 9030}\\npass out on en0 inet proto udp from any to any port {53, 443}\\n"
-            cmd += f"echo '{pf_rule}' > /tmp/ghost.pf; /sbin/pfctl -e; /sbin/pfctl -f /tmp/ghost.pf; "
-            self.log("[SYS] Strict PF Kernel Firewall injected. Deep packet leak prevention active.")
 
         self.log("Requesting root authorization for master kernel override...")
         success = self.run_admin_command(cmd)
@@ -380,8 +322,6 @@ class GhostProtocolApp:
                 self.killswitch_active = True
                 threading.Thread(target=self.monitor_killswitch, daemon=True).start()
                 self.log("Wi-Fi Kill-Switch ARMED. Monitoring heartbeat...")
-                
-            threading.Thread(target=self.monitor_telemetry, daemon=True).start()
                 
             self.log("ILLUSION COMPLETE.")
             self.root.after(1000, self.update_live_status)
@@ -397,12 +337,8 @@ class GhostProtocolApp:
     def _revert_process(self):
         self.btn_revert.config(state="disabled")
         self.killswitch_active = False
-        self.telemetry_active = False
         self.progress['value'] = 0
         self.log("Aborting protocol. Executing scorch-earth log wipe...")
-        
-        self.tx_label.config(text="TX [UP]  : 0.00 KB/s")
-        self.rx_label.config(text="RX [DWN] : 0.00 KB/s")
         
         os.system("killall tor 2>/dev/null")
         os.system("rm -rf ~/.tor/* 2>/dev/null")
@@ -418,10 +354,9 @@ class GhostProtocolApp:
                f"/usr/sbin/scutil --set LocalHostName '{self.original_hostname}'; "
                f"/usr/sbin/scutil --set HostName '{self.original_hostname}'; "
                f"defaults write /Library/Preferences/com.apple.Bluetooth ControllerPowerState -int 1; "
-               f"/sbin/pfctl -d; sed -i '' '/0.0.0.0/d' /etc/hosts; "
                f"/usr/bin/dscacheutil -flushcache; /usr/bin/killall -HUP mDNSResponder")
         
-        self.log("[SYS] Restoring kernel routing tables, PF firewall, and DNS cache...")
+        self.log("[SYS] Restoring kernel routing tables and DNS cache...")
         success = self.run_admin_command(cmd)
         
         if self.ram_disk_id:
