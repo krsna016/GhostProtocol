@@ -10,7 +10,9 @@
 - **Wi-Fi Kill-Switch**: A background thread actively monitors the Tor daemon. If Tor crashes, the framework physically drops the Wi-Fi interface (`en0`), preventing IP leaks.
 - **Dynamic Hostname Scrambling**: Uses `scutil` to mathematically randomize the machine's broadcast hostname to evade local network fingerprinting.
 - **Oblivious DNS-over-HTTPS (ODoH)**: Hijacks network resolvers to inject Cloudflare encrypted DNS (1.1.1.1), blinding local ISPs from domain queries.
-
+- **Global Intelligence Grid**: Expanded Tor routing configuration to natively support 60+ global exit nodes seamlessly integrated with exact system timezone overrides.
+- **Aggressive OPSEC UI**: Complete interface overhaul using native Apple `Menlo` terminal typography, large neon controls, and a hyper-detailed cryptographic terminal that traces Tor bootstrapping phases and outputs granular system-level tracking logs with live timestamps.
+- **GeoIP Desync Engineering**: Intentionally leverages loose Tor exit node geography vs. traditional IP databases (MaxMind) to generate cross-border location confusion, effectively poisoning commercial anti-fraud and tracking telemetry.
 ## Architecture & Mechanics
 
 Ghost Protocol executes mathematically verifiable digital plastic surgery across multiple system layers to evade endpoint telemetry, browser fingerprinting, and geolocation trackers.
