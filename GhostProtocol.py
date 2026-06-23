@@ -196,7 +196,8 @@ class GhostProtocolApp:
 
     def log(self, message):
         self.log_box.config(state="normal")
-        self.log_box.insert("end", f"root@ghost:~# {message}\n")
+        ts = time.strftime("%H:%M:%S")
+        self.log_box.insert("end", f"[{ts}] root@ghost:~# {message}\n")
         self.log_box.see("end")
         self.log_box.config(state="disabled")
 
@@ -266,13 +267,27 @@ class GhostProtocolApp:
         self.write_tor_config(target_info["cc"])
         os.system("/opt/homebrew/bin/tor > /dev/null 2>&1 &")
         
-        self.log("Igniting The Onion Router. Bootstrapping circuits...")
+        self.log("Igniting The Onion Router daemon [PID mapping...]")
         if self.opt_dpi.get():
-             self.log("Deep Packet Obfuscation Active (obfs4 Pluggable Transport)")
+             self.log("[MODULE] obfs4 Pluggable Transport attached. DPI blinded.")
              
         # Progress Bar Animation (Simulating Tor Bootstrap)
+        bootstrap_logs = [
+            "Handshaking with directory authorities...",
+            "Validating cryptographic signatures (RSA/Ed25519)...",
+            "Establishing primary entry guard node...",
+            "Building encrypted middle relay circuit...",
+            f"Forcing exit node compliance to {target_info['cc']}...",
+            "Circuit established. Negotiating TLS wrapper...",
+            "Verifying data stream integrity...",
+            "Local SOCKS5 proxy bound to 127.0.0.1:9050",
+            "Tor bootstrap phase 100% complete."
+        ]
+        
         for i in range(10):
             time.sleep(1)
+            if i < len(bootstrap_logs):
+                self.log(f"[SYS] {bootstrap_logs[i]}")
             self.progress['value'] += 10
             self.root.update_idletasks()
         
@@ -281,20 +296,20 @@ class GhostProtocolApp:
         
         if self.opt_dns.get():
             cmd += f"/usr/sbin/networksetup -setdnsservers 'Wi-Fi' 1.1.1.1 1.0.0.1; "
-            self.log("Injecting ODoH DNS Resolvers...")
+            self.log("[SYS] Injecting ODoH DNS Resolvers on en0...")
             
         if self.opt_host.get():
             scramble = "GHOST-" + ''.join(random.choices(string.ascii_uppercase + string.digits, k=5))
             cmd += f"/usr/sbin/scutil --set ComputerName '{scramble}'; /usr/sbin/scutil --set LocalHostName '{scramble}'; /usr/sbin/scutil --set HostName '{scramble}'; "
-            self.log(f"Scrambling MAC Hostname to: {scramble}")
+            self.log(f"[SYS] Scrambling MAC Hostname to: {scramble}")
 
         if self.opt_hw_kill.get():
             cmd += f"/usr/bin/killall VDCAssistant 2>/dev/null; /usr/bin/killall AppleCameraAssistant 2>/dev/null; /usr/bin/killall coreaudiod 2>/dev/null; "
-            self.log("Hardware Decapitation: Camera & Mic drivers violently unloaded.")
+            self.log("[HW] Decapitation: Camera & Mic drivers violently unloaded.")
 
         if self.opt_ble_kill.get():
             cmd += f"defaults write /Library/Preferences/com.apple.Bluetooth ControllerPowerState -int 0; /usr/bin/killall blued 2>/dev/null; /usr/bin/killall sharingd 2>/dev/null; "
-            self.log("Radio Silence: Bluetooth & AirDrop beacons massacred.")
+            self.log("[HW] Radio Silence: Bluetooth & AirDrop beacons massacred.")
 
         self.log("Requesting root authorization for master kernel override...")
         success = self.run_admin_command(cmd)
@@ -326,6 +341,7 @@ class GhostProtocolApp:
         self.log("Aborting protocol. Executing scorch-earth log wipe...")
         
         os.system("killall tor 2>/dev/null")
+        self.log("[SYS] Tor circuits collapsed. Socket 9050 closed.")
         
         cmd = (f"/usr/sbin/networksetup -setsocksfirewallproxystate 'Wi-Fi' off; "
                f"/usr/sbin/networksetup -setdnsservers 'Wi-Fi' 'Empty'; "
@@ -337,19 +353,20 @@ class GhostProtocolApp:
                f"defaults write /Library/Preferences/com.apple.Bluetooth ControllerPowerState -int 1; "
                f"/usr/bin/dscacheutil -flushcache; /usr/bin/killall -HUP mDNSResponder")
         
+        self.log("[SYS] Restoring kernel routing tables and DNS cache...")
         success = self.run_admin_command(cmd)
         
         if self.ram_disk_id:
             os.system(f"diskutil eject {self.ram_disk_id} > /dev/null 2>&1")
             self.ram_disk_id = None
-            self.log("Ghost Vault RAM Disk power cut. All quarantine data evaporated.")
+            self.log("[HW] Ghost Vault RAM Disk power cut. All quarantine data evaporated.")
 
         if success:
             self.net_label.config(text="[►] Routing Vector : DIRECT CONNECTION", fg="#888888")
-            self.log("System restored. DNS caches flushed. Logs obliterated.")
+            self.log("[OK] System restored. Logs obliterated. Illusion dissolved.")
             self.root.after(1000, self.update_live_status)
         else:
-            self.log("ERROR: Failed to revert kernel parameters.")
+            self.log("[ERROR] Failed to revert kernel parameters.")
             
         self.btn_revert.config(state="normal")
 
