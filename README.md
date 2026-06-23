@@ -1,13 +1,15 @@
-# Ghost Protocol - V2 (Advanced OPSEC)
+# Ghost Protocol - V3 (Ultimate OPSEC)
 
 ▶ An advanced, high-level defensive automation framework designed for comprehensive digital relocation and identity spoofing on macOS (Darwin).
 
-## V2 Advanced OPSEC Upgrades
+## V3 Ultimate OPSEC Upgrades
+- **Volatile RAM Containerization (Ghost Vault)**: Carves a 1GB block of active memory (RAM Disk). The Quarantine browser runs exclusively inside this volatile block. Upon revert, the RAM is flushed, permanently evaporating all forensic artifacts, cookies, and cache with zero SSD writes.
+- **Hardware Decapitation**: Physically unloads macOS CoreAudio and Camera daemons (`coreaudiod`, `AppleCameraAssistant`), preventing zero-day acoustic/visual surveillance.
+- **Radio Triangulation Blackout**: Massacres the `blued` and `sharingd` daemons to kill all Bluetooth Low Energy (BLE) and AirDrop beacons, blinding physical location tracking.
+- **Deep Packet Disguise (obfs4)**: Integrates Pluggable Transports to mathematically scramble Tor traffic, blinding Deep Packet Inspection (DPI) and making the connection resemble standard HTTPS.
 - **Wi-Fi Kill-Switch**: A background thread actively monitors the Tor daemon. If Tor crashes, the framework physically drops the Wi-Fi interface (`en0`), preventing IP leaks.
 - **Dynamic Hostname Scrambling**: Uses `scutil` to mathematically randomize the machine's broadcast hostname to evade local network fingerprinting.
 - **Oblivious DNS-over-HTTPS (ODoH)**: Hijacks network resolvers to inject Cloudflare encrypted DNS (1.1.1.1), blinding local ISPs from domain queries.
-- **Forensic Log Obliteration**: Flushes the system DNS cache (`dscacheutil`) and triggers a deep wipe of active connection metadata upon reverting.
-- **Quarantine Containerization**: Spawns highly isolated Chromium processes that are strictly funneled through Tor, bypassing master system routing.
 
 ## Architecture & Mechanics
 
