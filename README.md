@@ -1,6 +1,11 @@
-# Ghost Protocol - V3 (Ultimate OPSEC)
+# Ghost Protocol - V4 (Architect Level)
 
 ▶ An advanced, high-level defensive automation framework designed for comprehensive digital relocation and identity spoofing on macOS (Darwin).
+
+## V4 Architect Level Upgrades
+- **Strict PF Kernel Firewall**: Injects native `pf` rules directly into the macOS networking stack, forcefully dropping all outbound internet packets not specifically bound for the local Tor socket (`127.0.0.1:9050`), preventing massive application-layer leaks.
+- **Localized DNS Sinkhole**: Programmatically modifies the host machine's routing logic to violently blackhole known telemetry servers, tracking infrastructure, and ad-networks before they can even enter the encrypted tunnel.
+- **Real-Time Cryptographic Telemetry**: A dual-pane HUD that directly polls the `en0` network interface to display granular, real-time RX/TX (Download/Upload) bandwidth metrics, granting total visibility over the Tor connection's throughput.
 
 ## V3 Ultimate OPSEC Upgrades
 - **Volatile RAM Containerization (Ghost Vault)**: Carves a 1GB block of active memory (RAM Disk). The Quarantine browser runs exclusively inside this volatile block. Upon revert, the RAM is flushed, permanently evaporating all forensic artifacts, cookies, and cache with zero SSD writes.
@@ -13,6 +18,7 @@
 - **Global Intelligence Grid**: Expanded Tor routing configuration to natively support 60+ global exit nodes seamlessly integrated with exact system timezone overrides.
 - **Aggressive OPSEC UI**: Complete interface overhaul using native Apple `Menlo` terminal typography, large neon controls, and a hyper-detailed cryptographic terminal that traces Tor bootstrapping phases and outputs granular system-level tracking logs with live timestamps.
 - **GeoIP Desync Engineering**: Intentionally leverages loose Tor exit node geography vs. traditional IP databases (MaxMind) to generate cross-border location confusion, effectively poisoning commercial anti-fraud and tracking telemetry.
+
 ## Architecture & Mechanics
 
 Ghost Protocol executes mathematically verifiable digital plastic surgery across multiple system layers to evade endpoint telemetry, browser fingerprinting, and geolocation trackers.
