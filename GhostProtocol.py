@@ -383,9 +383,9 @@ class GhostProtocolApp:
             os.system(f"diskutil erasevolume HFS+ 'GhostVault' {self.ram_disk_id} > /dev/null 2>&1")
             
             self.log("Launching highly isolated Chromium container inside RAM...")
-            os.system('/Applications/Google\\ Chrome.app/Contents/MacOS/Google\\ Chrome --proxy-server="socks5://127.0.0.1:9050" --user-data-dir="/Volumes/GhostVault/ChromeData" --incognito > /dev/null 2>&1 &')
+            os.system('open -n -a "Google Chrome" --args --proxy-server="socks5://127.0.0.1:9050" --user-data-dir="/Volumes/GhostVault/ChromeData" --incognito')
         except Exception as e:
-            self.log(f"ERROR launching RAM Quarantine: {e}")
+            self.log(f"[ERROR] launching RAM Quarantine: {e}")
 
 if __name__ == "__main__":
     root = tk.Tk()
