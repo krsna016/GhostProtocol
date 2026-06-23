@@ -11,14 +11,14 @@ class GhostProtocolApp:
     def __init__(self, root):
         self.root = root
         self.root.title("GHOST PROTOCOL V4 - ARCHITECT LEVEL")
-        self.root.geometry("1150x1100")
+        self.root.geometry("1100x850")
         self.root.configure(bg="#020202")
         
         screen_width = self.root.winfo_screenwidth()
         screen_height = self.root.winfo_screenheight()
         x = int((screen_width / 2) - (1100 / 2))
-        y = int((screen_height / 2) - (1000 / 2))
-        self.root.geometry(f"1100x1000+{x}+{y}")
+        y = int((screen_height / 2) - (850 / 2))
+        self.root.geometry(f"1100x850+{x}+{y}")
         
         self.regions = {
             "Original (Restore)": {"tz": "Asia/Calcutta", "cc": "restore"},
@@ -185,11 +185,11 @@ class GhostProtocolApp:
 
         # Progress Bar
         self.progress = ttk.Progressbar(self.root, style="Neon.Horizontal.TProgressbar", orient="horizontal", mode="determinate")
-        self.progress.pack(fill="x", padx=50, pady=(10,0))
+        self.progress.pack(fill="x", padx=50, pady=(5,0))
 
         # Terminal Log Box
-        self.log_box = tk.Text(self.root, height=10, bg="#050505", fg="#00ffcc", font=("Menlo", 14, "bold"), bd=2, highlightbackground="#333333", highlightthickness=2, state="disabled")
-        self.log_box.pack(fill="x", padx=50, pady=(0, 20))
+        self.log_box = tk.Text(self.root, height=5, bg="#050505", fg="#00ffcc", font=("Menlo", 12, "bold"), bd=2, highlightbackground="#333333", highlightthickness=2, state="disabled")
+        self.log_box.pack(fill="x", padx=50, pady=(0, 5))
 
         # Action Buttons
         btn_frame = tk.Frame(self.root, bg="#020202")
