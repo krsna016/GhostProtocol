@@ -11,14 +11,14 @@ class GhostProtocolApp:
     def __init__(self, root):
         self.root = root
         self.root.title("GHOST PROTOCOL V3 - ULTIMATE OPSEC")
-        self.root.geometry("900x850")
+        self.root.geometry("1100x1000")
         self.root.configure(bg="#020202")
         
         screen_width = self.root.winfo_screenwidth()
         screen_height = self.root.winfo_screenheight()
-        x = int((screen_width / 2) - (900 / 2))
-        y = int((screen_height / 2) - (850 / 2))
-        self.root.geometry(f"900x850+{x}+{y}")
+        x = int((screen_width / 2) - (1100 / 2))
+        y = int((screen_height / 2) - (1000 / 2))
+        self.root.geometry(f"1100x1000+{x}+{y}")
         
         self.regions = {
             "Original (Restore)": {"tz": "Asia/Calcutta", "cc": "restore"},
@@ -115,72 +115,72 @@ class GhostProtocolApp:
         header.pack(pady=(10, 0))
         
         # Blinking Global Status Indicator
-        self.global_status = tk.Label(self.root, text="● SYSTEM OFFLINE", font=("Courier", 14, "bold"), fg="#ff3333", bg="#020202")
-        self.global_status.pack(pady=(0, 15))
+        self.global_status = tk.Label(self.root, text="● SYSTEM OFFLINE", font=("Courier", 20, "bold"), fg="#ff3333", bg="#020202")
+        self.global_status.pack(pady=(0, 20))
         
         # Status Dashboard HUD
-        status_frame = tk.Frame(self.root, bg="#0a0a0a", highlightbackground="#00ffcc", highlightthickness=1)
-        status_frame.pack(fill="x", padx=40, pady=5)
+        status_frame = tk.Frame(self.root, bg="#0a0a0a", highlightbackground="#00ffcc", highlightthickness=2)
+        status_frame.pack(fill="x", padx=50, pady=5)
         
-        self.net_label = tk.Label(status_frame, text="[►] Routing Vector : DIRECT CONNECTION", font=("Courier", 12), fg="#888888", bg="#0a0a0a")
-        self.net_label.pack(anchor="w", padx=20, pady=8)
+        self.net_label = tk.Label(status_frame, text="[►] Routing Vector : DIRECT CONNECTION", font=("Courier", 15, "bold"), fg="#888888", bg="#0a0a0a")
+        self.net_label.pack(anchor="w", padx=25, pady=8)
         
-        self.tz_label = tk.Label(status_frame, text="[►] System Timezone: Scanning...", font=("Courier", 12), fg="#888888", bg="#0a0a0a")
-        self.tz_label.pack(anchor="w", padx=20, pady=2)
+        self.tz_label = tk.Label(status_frame, text="[►] System Timezone: Scanning...", font=("Courier", 15, "bold"), fg="#888888", bg="#0a0a0a")
+        self.tz_label.pack(anchor="w", padx=25, pady=2)
         
-        self.host_label = tk.Label(status_frame, text=f"[►] Node Hostname  : {self.original_hostname}", font=("Courier", 12), fg="#888888", bg="#0a0a0a")
-        self.host_label.pack(anchor="w", padx=20, pady=(2, 8))
+        self.host_label = tk.Label(status_frame, text=f"[►] Node Hostname  : {self.original_hostname}", font=("Courier", 15, "bold"), fg="#888888", bg="#0a0a0a")
+        self.host_label.pack(anchor="w", padx=25, pady=(2, 8))
         
         # Controls Dashboard
         control_frame = tk.Frame(self.root, bg="#020202")
-        control_frame.pack(fill="both", expand=True, padx=40, pady=10)
+        control_frame.pack(fill="both", expand=True, padx=50, pady=15)
         
-        tk.Label(control_frame, text="TARGET LOCATION:", font=("Courier", 12, "bold"), fg="#ffffff", bg="#020202").grid(row=0, column=0, sticky="w", pady=15)
+        tk.Label(control_frame, text="TARGET LOCATION:", font=("Courier", 16, "bold"), fg="#ffffff", bg="#020202").grid(row=0, column=0, sticky="w", pady=15)
         
-        self.selected_region = tk.StringVar(value="Tokyo, Japan")
+        self.selected_region = tk.StringVar(value="Japan (Tokyo)")
         self.region_menu = tk.OptionMenu(control_frame, self.selected_region, *self.regions.keys())
-        self.region_menu.config(font=("Courier", 12, "bold"), bg="#111111", fg="#00ffcc", highlightthickness=1, highlightbackground="#00ffcc", activebackground="#222222", activeforeground="#ffffff")
+        self.region_menu.config(font=("Courier", 16, "bold"), bg="#111111", fg="#00ffcc", highlightthickness=2, highlightbackground="#00ffcc", activebackground="#222222", activeforeground="#ffffff")
         self.region_menu.grid(row=0, column=1, sticky="w", padx=20, pady=15)
         
         # Checkboxes for Intense Features
         self.opt_dns = tk.BooleanVar(value=True)
-        tk.Checkbutton(control_frame, text="[V2] Cloudflare ODoH DNS Injection", variable=self.opt_dns, font=("Courier", 11), bg="#020202", fg="#00ffcc", selectcolor="#111111", activebackground="#020202", activeforeground="#ffffff").grid(row=1, column=0, columnspan=2, sticky="w", pady=4)
+        tk.Checkbutton(control_frame, text="[V2] Cloudflare ODoH DNS Injection", variable=self.opt_dns, font=("Courier", 14, "bold"), bg="#020202", fg="#00ffcc", selectcolor="#111111", activebackground="#020202", activeforeground="#ffffff").grid(row=1, column=0, columnspan=2, sticky="w", pady=6)
         
         self.opt_host = tk.BooleanVar(value=True)
-        tk.Checkbutton(control_frame, text="[V2] Mathematical Hostname Scrambling", variable=self.opt_host, font=("Courier", 11), bg="#020202", fg="#00ffcc", selectcolor="#111111", activebackground="#020202", activeforeground="#ffffff").grid(row=2, column=0, columnspan=2, sticky="w", pady=4)
+        tk.Checkbutton(control_frame, text="[V2] Mathematical Hostname Scrambling", variable=self.opt_host, font=("Courier", 14, "bold"), bg="#020202", fg="#00ffcc", selectcolor="#111111", activebackground="#020202", activeforeground="#ffffff").grid(row=2, column=0, columnspan=2, sticky="w", pady=6)
         
         self.opt_kill = tk.BooleanVar(value=True)
-        tk.Checkbutton(control_frame, text="[V2] Wi-Fi Subnet Kill-Switch", variable=self.opt_kill, font=("Courier", 11, "bold"), bg="#020202", fg="#ff3333", selectcolor="#111111", activebackground="#020202", activeforeground="#ff0000").grid(row=3, column=0, columnspan=2, sticky="w", pady=4)
+        tk.Checkbutton(control_frame, text="[V2] Wi-Fi Subnet Kill-Switch", variable=self.opt_kill, font=("Courier", 14, "bold"), bg="#020202", fg="#ff3333", selectcolor="#111111", activebackground="#020202", activeforeground="#ff0000").grid(row=3, column=0, columnspan=2, sticky="w", pady=6)
         
         self.opt_hw_kill = tk.BooleanVar(value=True)
-        tk.Checkbutton(control_frame, text="[V3] Hardware Decapitation (Camera/Mic Blackout)", variable=self.opt_hw_kill, font=("Courier", 11), bg="#020202", fg="#ff00ff", selectcolor="#111111", activebackground="#020202", activeforeground="#ff99ff").grid(row=4, column=0, columnspan=2, sticky="w", pady=4)
+        tk.Checkbutton(control_frame, text="[V3] Hardware Decapitation (Camera/Mic Blackout)", variable=self.opt_hw_kill, font=("Courier", 14, "bold"), bg="#020202", fg="#ff00ff", selectcolor="#111111", activebackground="#020202", activeforeground="#ff99ff").grid(row=4, column=0, columnspan=2, sticky="w", pady=6)
 
         self.opt_ble_kill = tk.BooleanVar(value=True)
-        tk.Checkbutton(control_frame, text="[V3] Radio Triangulation Blackout (BLE/AirDrop)", variable=self.opt_ble_kill, font=("Courier", 11), bg="#020202", fg="#ff00ff", selectcolor="#111111", activebackground="#020202", activeforeground="#ff99ff").grid(row=5, column=0, columnspan=2, sticky="w", pady=4)
+        tk.Checkbutton(control_frame, text="[V3] Radio Triangulation Blackout (BLE/AirDrop)", variable=self.opt_ble_kill, font=("Courier", 14, "bold"), bg="#020202", fg="#ff00ff", selectcolor="#111111", activebackground="#020202", activeforeground="#ff99ff").grid(row=5, column=0, columnspan=2, sticky="w", pady=6)
 
         self.opt_dpi = tk.BooleanVar(value=True)
-        tk.Checkbutton(control_frame, text="[V3] Deep Packet Disguise (obfs4 Transports)", variable=self.opt_dpi, font=("Courier", 11), bg="#020202", fg="#ff00ff", selectcolor="#111111", activebackground="#020202", activeforeground="#ff99ff").grid(row=6, column=0, columnspan=2, sticky="w", pady=4)
+        tk.Checkbutton(control_frame, text="[V3] Deep Packet Disguise (obfs4 Transports)", variable=self.opt_dpi, font=("Courier", 14, "bold"), bg="#020202", fg="#ff00ff", selectcolor="#111111", activebackground="#020202", activeforeground="#ff99ff").grid(row=6, column=0, columnspan=2, sticky="w", pady=6)
 
         # Progress Bar
         self.progress = ttk.Progressbar(self.root, style="Neon.Horizontal.TProgressbar", orient="horizontal", mode="determinate")
-        self.progress.pack(fill="x", padx=40, pady=(5,0))
+        self.progress.pack(fill="x", padx=50, pady=(10,0))
 
         # Terminal Log Box
-        self.log_box = tk.Text(self.root, height=8, bg="#050505", fg="#00ffcc", font=("Courier", 11), bd=1, highlightbackground="#333333", highlightthickness=1, state="disabled")
-        self.log_box.pack(fill="x", padx=40, pady=(0, 15))
+        self.log_box = tk.Text(self.root, height=10, bg="#050505", fg="#00ffcc", font=("Courier", 14, "bold"), bd=2, highlightbackground="#333333", highlightthickness=2, state="disabled")
+        self.log_box.pack(fill="x", padx=50, pady=(0, 20))
 
         # Action Buttons
         btn_frame = tk.Frame(self.root, bg="#020202")
-        btn_frame.pack(pady=10)
+        btn_frame.pack(pady=15)
         
-        self.btn_relocate = tk.Button(btn_frame, text="[ ENGAGE PROTOCOL ]", font=("Courier", 14, "bold"), fg="#000000", bg="#00ffcc", activebackground="#ffffff", width=20, bd=0, command=self.start_spoofing)
-        self.btn_relocate.grid(row=0, column=0, padx=10)
+        self.btn_relocate = tk.Button(btn_frame, text="[ ENGAGE PROTOCOL ]", font=("Courier", 16, "bold"), fg="#000000", bg="#00ffcc", activebackground="#ffffff", width=22, bd=0, command=self.start_spoofing)
+        self.btn_relocate.grid(row=0, column=0, padx=15)
         
-        self.btn_revert = tk.Button(btn_frame, text="[ ABORT & WIPE ]", font=("Courier", 14, "bold"), fg="#ffffff", bg="#ff3333", activebackground="#ff0000", width=20, bd=0, command=self.revert_system)
-        self.btn_revert.grid(row=0, column=1, padx=10)
+        self.btn_revert = tk.Button(btn_frame, text="[ ABORT & WIPE ]", font=("Courier", 16, "bold"), fg="#ffffff", bg="#ff3333", activebackground="#ff0000", width=22, bd=0, command=self.revert_system)
+        self.btn_revert.grid(row=0, column=1, padx=15)
         
-        self.btn_quarantine = tk.Button(btn_frame, text="[ RAM QUARANTINE ]", font=("Courier", 14, "bold"), fg="#ffffff", bg="#aa00ff", activebackground="#cc66ff", width=20, bd=0, command=self.launch_quarantine)
-        self.btn_quarantine.grid(row=0, column=2, padx=10)
+        self.btn_quarantine = tk.Button(btn_frame, text="[ RAM QUARANTINE ]", font=("Courier", 16, "bold"), fg="#ffffff", bg="#aa00ff", activebackground="#cc66ff", width=22, bd=0, command=self.launch_quarantine)
+        self.btn_quarantine.grid(row=0, column=2, padx=15)
         
         self.log("Initializing Ghost Protocol V3 Core Kernel...")
         self.log("Awaiting operator instructions.")
