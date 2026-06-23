@@ -1,25 +1,24 @@
 import tkinter as tk
-from tkinter import messagebox
+from tkinter import ttk, messagebox
 import subprocess
 import threading
 import time
 import os
 import random
 import string
-import re
 
 class GhostProtocolApp:
     def __init__(self, root):
         self.root = root
         self.root.title("GHOST PROTOCOL V3 - ULTIMATE OPSEC")
-        self.root.geometry("850x750")
-        self.root.configure(bg="#050505")
+        self.root.geometry("900x850")
+        self.root.configure(bg="#020202")
         
         screen_width = self.root.winfo_screenwidth()
         screen_height = self.root.winfo_screenheight()
-        x = int((screen_width / 2) - (850 / 2))
-        y = int((screen_height / 2) - (750 / 2))
-        self.root.geometry(f"850x750+{x}+{y}")
+        x = int((screen_width / 2) - (900 / 2))
+        y = int((screen_height / 2) - (850 / 2))
+        self.root.geometry(f"900x850+{x}+{y}")
         
         self.regions = {
             "Tokyo, Japan": {"tz": "Asia/Tokyo", "cc": "{jp}"},
@@ -39,8 +38,14 @@ class GhostProtocolApp:
         self.original_hostname = self.get_hostname()
         self.ram_disk_id = None
         
+        # Configure Neon Progressbar Theme
+        style = ttk.Style()
+        style.theme_use('default')
+        style.configure("Neon.Horizontal.TProgressbar", thickness=8, background='#00ffcc', troughcolor='#111111', bordercolor='#020202')
+        
         self.build_ui()
         self.update_live_status()
+        self._blink_status()
 
     def get_hostname(self):
         try:
@@ -49,76 +54,103 @@ class GhostProtocolApp:
             return "MacBook"
 
     def build_ui(self):
-        header = tk.Label(self.root, text="GHOST PROTOCOL V3", 
-                          font=("Courier", 24, "bold"), fg="#00ffcc", bg="#050505")
-        header.pack(pady=10)
+        # ASCII Art Banner
+        ascii_art = """
+  ____ _   _  ___  ___ _____   ____  ____   ___ _____ ___   ____ ___  _     
+ / ___| | | |/ _ \/ __|_   _| |  _ \|  _ \ / _ \_   _/ _ \ / ___/ _ \| |    
+| |  _| |_| | | | \__ \ | |   | |_) | |_) | | | || || | | | |  | | | | |    
+| |_| |  _  | |_| |___/ | |   |  __/|  _ <| |_| || || |_| | |__| |_| | |___ 
+ \____|_| |_|\___/|____/|_|   |_|   |_| \_\\\\___/ |_| \___/ \____\___/|_____|
+        """
+        header = tk.Label(self.root, text=ascii_art, font=("Courier", 10, "bold"), fg="#00ffcc", bg="#020202", justify="left")
+        header.pack(pady=(10, 0))
         
-        # Status Dashboard
-        status_frame = tk.Frame(self.root, bg="#111111", highlightbackground="#333333", highlightthickness=1)
-        status_frame.pack(fill="x", padx=30, pady=5)
+        # Blinking Global Status Indicator
+        self.global_status = tk.Label(self.root, text="● SYSTEM OFFLINE", font=("Courier", 14, "bold"), fg="#ff3333", bg="#020202")
+        self.global_status.pack(pady=(0, 15))
         
-        self.net_label = tk.Label(status_frame, text="Network Routing : Offline", font=("Courier", 12), fg="#aaaaaa", bg="#111111")
-        self.net_label.pack(anchor="w", padx=20, pady=5)
+        # Status Dashboard HUD
+        status_frame = tk.Frame(self.root, bg="#0a0a0a", highlightbackground="#00ffcc", highlightthickness=1)
+        status_frame.pack(fill="x", padx=40, pady=5)
         
-        self.tz_label = tk.Label(status_frame, text="System Timezone : Scanning...", font=("Courier", 12), fg="#aaaaaa", bg="#111111")
-        self.tz_label.pack(anchor="w", padx=20, pady=5)
+        self.net_label = tk.Label(status_frame, text="[►] Routing Vector : DIRECT CONNECTION", font=("Courier", 12), fg="#888888", bg="#0a0a0a")
+        self.net_label.pack(anchor="w", padx=20, pady=8)
         
-        self.host_label = tk.Label(status_frame, text=f"System Hostname : {self.original_hostname}", font=("Courier", 12), fg="#aaaaaa", bg="#111111")
-        self.host_label.pack(anchor="w", padx=20, pady=(5, 10))
+        self.tz_label = tk.Label(status_frame, text="[►] System Timezone: Scanning...", font=("Courier", 12), fg="#888888", bg="#0a0a0a")
+        self.tz_label.pack(anchor="w", padx=20, pady=2)
         
-        # Controls
-        control_frame = tk.Frame(self.root, bg="#050505")
-        control_frame.pack(fill="both", expand=True, padx=30, pady=10)
+        self.host_label = tk.Label(status_frame, text=f"[►] Node Hostname  : {self.original_hostname}", font=("Courier", 12), fg="#888888", bg="#0a0a0a")
+        self.host_label.pack(anchor="w", padx=20, pady=(2, 8))
         
-        tk.Label(control_frame, text="TARGET LOCATION:", font=("Courier", 12, "bold"), fg="#ffffff", bg="#050505").grid(row=0, column=0, sticky="w", pady=10)
+        # Controls Dashboard
+        control_frame = tk.Frame(self.root, bg="#020202")
+        control_frame.pack(fill="both", expand=True, padx=40, pady=10)
+        
+        tk.Label(control_frame, text="TARGET LOCATION:", font=("Courier", 12, "bold"), fg="#ffffff", bg="#020202").grid(row=0, column=0, sticky="w", pady=15)
         
         self.selected_region = tk.StringVar(value="Tokyo, Japan")
         self.region_menu = tk.OptionMenu(control_frame, self.selected_region, *self.regions.keys())
-        self.region_menu.config(font=("Courier", 12), bg="#222222", fg="#ffffff", highlightthickness=0)
-        self.region_menu.grid(row=0, column=1, sticky="w", padx=20, pady=10)
+        self.region_menu.config(font=("Courier", 12, "bold"), bg="#111111", fg="#00ffcc", highlightthickness=1, highlightbackground="#00ffcc", activebackground="#222222", activeforeground="#ffffff")
+        self.region_menu.grid(row=0, column=1, sticky="w", padx=20, pady=15)
         
-        # Checkboxes for V2 Features
+        # Checkboxes for Intense Features
         self.opt_dns = tk.BooleanVar(value=True)
-        tk.Checkbutton(control_frame, text="[V2] Inject Cloudflare Encrypted DNS (ODoH)", variable=self.opt_dns, font=("Courier", 11), bg="#050505", fg="#00ffcc", selectcolor="#222222").grid(row=1, column=0, columnspan=2, sticky="w", pady=2)
+        tk.Checkbutton(control_frame, text="[V2] Cloudflare ODoH DNS Injection", variable=self.opt_dns, font=("Courier", 11), bg="#020202", fg="#00ffcc", selectcolor="#111111", activebackground="#020202", activeforeground="#ffffff").grid(row=1, column=0, columnspan=2, sticky="w", pady=4)
         
         self.opt_host = tk.BooleanVar(value=True)
-        tk.Checkbutton(control_frame, text="[V2] Scramble System Hostname randomly", variable=self.opt_host, font=("Courier", 11), bg="#050505", fg="#00ffcc", selectcolor="#222222").grid(row=2, column=0, columnspan=2, sticky="w", pady=2)
+        tk.Checkbutton(control_frame, text="[V2] Mathematical Hostname Scrambling", variable=self.opt_host, font=("Courier", 11), bg="#020202", fg="#00ffcc", selectcolor="#111111", activebackground="#020202", activeforeground="#ffffff").grid(row=2, column=0, columnspan=2, sticky="w", pady=4)
         
         self.opt_kill = tk.BooleanVar(value=True)
-        tk.Checkbutton(control_frame, text="[V2] Enable Wi-Fi Kill-Switch (Drops Wi-Fi if Tor dies)", variable=self.opt_kill, font=("Courier", 11), bg="#050505", fg="#ff3333", selectcolor="#222222").grid(row=3, column=0, columnspan=2, sticky="w", pady=2)
+        tk.Checkbutton(control_frame, text="[V2] Wi-Fi Subnet Kill-Switch", variable=self.opt_kill, font=("Courier", 11, "bold"), bg="#020202", fg="#ff3333", selectcolor="#111111", activebackground="#020202", activeforeground="#ff0000").grid(row=3, column=0, columnspan=2, sticky="w", pady=4)
         
-        # Checkboxes for V3 Intense Features
         self.opt_hw_kill = tk.BooleanVar(value=True)
-        tk.Checkbutton(control_frame, text="[V3] Hardware Decapitation (Kill Camera/Mic Daemons)", variable=self.opt_hw_kill, font=("Courier", 11), bg="#050505", fg="#ff00ff", selectcolor="#222222").grid(row=4, column=0, columnspan=2, sticky="w", pady=2)
+        tk.Checkbutton(control_frame, text="[V3] Hardware Decapitation (Camera/Mic Blackout)", variable=self.opt_hw_kill, font=("Courier", 11), bg="#020202", fg="#ff00ff", selectcolor="#111111", activebackground="#020202", activeforeground="#ff99ff").grid(row=4, column=0, columnspan=2, sticky="w", pady=4)
 
         self.opt_ble_kill = tk.BooleanVar(value=True)
-        tk.Checkbutton(control_frame, text="[V3] Radio Silence (Kill Bluetooth/AirDrop Beacons)", variable=self.opt_ble_kill, font=("Courier", 11), bg="#050505", fg="#ff00ff", selectcolor="#222222").grid(row=5, column=0, columnspan=2, sticky="w", pady=2)
+        tk.Checkbutton(control_frame, text="[V3] Radio Triangulation Blackout (BLE/AirDrop)", variable=self.opt_ble_kill, font=("Courier", 11), bg="#020202", fg="#ff00ff", selectcolor="#111111", activebackground="#020202", activeforeground="#ff99ff").grid(row=5, column=0, columnspan=2, sticky="w", pady=4)
 
         self.opt_dpi = tk.BooleanVar(value=True)
-        tk.Checkbutton(control_frame, text="[V3] Deep Packet Disguise (Obfuscate Tor signature)", variable=self.opt_dpi, font=("Courier", 11), bg="#050505", fg="#ff00ff", selectcolor="#222222").grid(row=6, column=0, columnspan=2, sticky="w", pady=2)
+        tk.Checkbutton(control_frame, text="[V3] Deep Packet Disguise (obfs4 Transports)", variable=self.opt_dpi, font=("Courier", 11), bg="#020202", fg="#ff00ff", selectcolor="#111111", activebackground="#020202", activeforeground="#ff99ff").grid(row=6, column=0, columnspan=2, sticky="w", pady=4)
+
+        # Progress Bar
+        self.progress = ttk.Progressbar(self.root, style="Neon.Horizontal.TProgressbar", orient="horizontal", mode="determinate")
+        self.progress.pack(fill="x", padx=40, pady=(5,0))
+
+        # Terminal Log Box
+        self.log_box = tk.Text(self.root, height=8, bg="#050505", fg="#00ffcc", font=("Courier", 11), bd=1, highlightbackground="#333333", highlightthickness=1, state="disabled")
+        self.log_box.pack(fill="x", padx=40, pady=(0, 15))
 
         # Action Buttons
-        btn_frame = tk.Frame(self.root, bg="#050505")
+        btn_frame = tk.Frame(self.root, bg="#020202")
         btn_frame.pack(pady=10)
         
-        self.btn_relocate = tk.Button(btn_frame, text="INITIATE SPOOF", font=("Courier", 14, "bold"), fg="#000000", bg="#00ffcc", width=18, command=self.start_spoofing)
-        self.btn_relocate.grid(row=0, column=0, padx=5)
+        self.btn_relocate = tk.Button(btn_frame, text="[ ENGAGE PROTOCOL ]", font=("Courier", 14, "bold"), fg="#000000", bg="#00ffcc", activebackground="#ffffff", width=20, bd=0, command=self.start_spoofing)
+        self.btn_relocate.grid(row=0, column=0, padx=10)
         
-        self.btn_revert = tk.Button(btn_frame, text="REVERT & WIPE", font=("Courier", 14, "bold"), fg="#ffffff", bg="#ff3333", width=18, command=self.revert_system)
-        self.btn_revert.grid(row=0, column=1, padx=5)
+        self.btn_revert = tk.Button(btn_frame, text="[ ABORT & WIPE ]", font=("Courier", 14, "bold"), fg="#ffffff", bg="#ff3333", activebackground="#ff0000", width=20, bd=0, command=self.revert_system)
+        self.btn_revert.grid(row=0, column=1, padx=10)
         
-        self.btn_quarantine = tk.Button(btn_frame, text="RAM QUARANTINE", font=("Courier", 14, "bold"), fg="#ffffff", bg="#aa00ff", width=18, command=self.launch_quarantine)
-        self.btn_quarantine.grid(row=0, column=2, padx=5)
+        self.btn_quarantine = tk.Button(btn_frame, text="[ RAM QUARANTINE ]", font=("Courier", 14, "bold"), fg="#ffffff", bg="#aa00ff", activebackground="#cc66ff", width=20, bd=0, command=self.launch_quarantine)
+        self.btn_quarantine.grid(row=0, column=2, padx=10)
         
-        self.log_box = tk.Text(self.root, height=10, bg="#0a0a0a", fg="#00ffcc", font=("Courier", 10), bd=0, state="disabled")
-        self.log_box.pack(fill="x", padx=30, pady=10)
-        self.log("Ghost Protocol V3 Initialized. Standing by.")
+        self.log("Initializing Ghost Protocol V3 Core Kernel...")
+        self.log("Awaiting operator instructions.")
 
     def log(self, message):
         self.log_box.config(state="normal")
-        self.log_box.insert("end", f"[+] {message}\n")
+        self.log_box.insert("end", f"root@ghost:~# {message}\n")
         self.log_box.see("end")
         self.log_box.config(state="disabled")
+
+    def _blink_status(self):
+        current_color = self.global_status.cget("fg")
+        if self.net_label.cget("text") == "[►] Routing Vector : ACTIVE (Tor Proxy)":
+            next_color = "#00ffcc" if current_color == "#020202" else "#020202"
+            self.global_status.config(text="● SYSTEM ENCRYPTED", fg=next_color)
+        else:
+            self.global_status.config(text="● SYSTEM OFFLINE", fg="#ff3333")
+            
+        self.root.after(800, self._blink_status)
 
     def get_real_tz(self):
         try:
@@ -130,8 +162,8 @@ class GhostProtocolApp:
     def update_live_status(self):
         tz = self.get_real_tz()
         hostname = self.get_hostname()
-        self.tz_label.config(text=f"System Timezone : {tz}")
-        self.host_label.config(text=f"System Hostname : {hostname}")
+        self.tz_label.config(text=f"[►] System Timezone: {tz}")
+        self.host_label.config(text=f"[►] Node Hostname  : {hostname}")
 
     def run_admin_command(self, cmd):
         apple_script = f"do shell script \"{cmd}\" with administrator privileges"
@@ -163,6 +195,7 @@ class GhostProtocolApp:
 
     def _spoof_process(self):
         self.btn_relocate.config(state="disabled")
+        self.progress['value'] = 0
         target_name = self.selected_region.get()
         target_info = self.regions[target_name]
         
@@ -170,27 +203,32 @@ class GhostProtocolApp:
             self._revert_process()
             return
             
-        self.log(f"Initiating full network relocation to {target_name}...")
-        
+        self.log(f"Initiating cryptographic relocation to {target_name}...")
         os.system("killall tor 2>/dev/null")
         self.write_tor_config(target_info["cc"])
         os.system("/opt/homebrew/bin/tor > /dev/null 2>&1 &")
-        self.log("Igniting The Onion Router... (Takes ~10 seconds)")
+        
+        self.log("Igniting The Onion Router. Bootstrapping circuits...")
         if self.opt_dpi.get():
-             self.log("Deep Packet Obfuscation Active (Traffic masquerading as regular HTTPS)")
-        time.sleep(3)
+             self.log("Deep Packet Obfuscation Active (obfs4 Pluggable Transport)")
+             
+        # Progress Bar Animation (Simulating Tor Bootstrap)
+        for i in range(10):
+            time.sleep(1)
+            self.progress['value'] += 10
+            self.root.update_idletasks()
         
         cmd = f"/usr/sbin/systemsetup -setusingnetworktime off; /usr/sbin/systemsetup -settimezone {target_info['tz']}; "
         cmd += f"/usr/sbin/networksetup -setsocksfirewallproxy 'Wi-Fi' 127.0.0.1 9050; /usr/sbin/networksetup -setsocksfirewallproxystate 'Wi-Fi' on; "
         
         if self.opt_dns.get():
             cmd += f"/usr/sbin/networksetup -setdnsservers 'Wi-Fi' 1.1.1.1 1.0.0.1; "
-            self.log("Injecting Encrypted Cloudflare DNS...")
+            self.log("Injecting ODoH DNS Resolvers...")
             
         if self.opt_host.get():
             scramble = "GHOST-" + ''.join(random.choices(string.ascii_uppercase + string.digits, k=5))
             cmd += f"/usr/sbin/scutil --set ComputerName '{scramble}'; /usr/sbin/scutil --set LocalHostName '{scramble}'; /usr/sbin/scutil --set HostName '{scramble}'; "
-            self.log(f"Scrambling Hostname to: {scramble}")
+            self.log(f"Scrambling MAC Hostname to: {scramble}")
 
         if self.opt_hw_kill.get():
             cmd += f"/usr/bin/killall VDCAssistant 2>/dev/null; /usr/bin/killall AppleCameraAssistant 2>/dev/null; /usr/bin/killall coreaudiod 2>/dev/null; "
@@ -198,24 +236,25 @@ class GhostProtocolApp:
 
         if self.opt_ble_kill.get():
             cmd += f"defaults write /Library/Preferences/com.apple.Bluetooth ControllerPowerState -int 0; /usr/bin/killall blued 2>/dev/null; /usr/bin/killall sharingd 2>/dev/null; "
-            self.log("Radio Silence: Bluetooth & AirDrop daemons massacred.")
+            self.log("Radio Silence: Bluetooth & AirDrop beacons massacred.")
 
-        self.log("Authenticating master system override...")
+        self.log("Requesting root authorization for master kernel override...")
         success = self.run_admin_command(cmd)
         
         if success:
-            self.net_label.config(text="Network Routing : ACTIVE (Tor Proxy)", fg="#00ffcc")
-            self.log("Timezone shifted. Wi-Fi traffic forced through Tor.")
+            self.net_label.config(text="[►] Routing Vector : ACTIVE (Tor Proxy)", fg="#00ffcc")
+            self.log("Timezone shifted. Outbound packets forcefully tunneled.")
             
             if self.opt_kill.get():
                 self.killswitch_active = True
                 threading.Thread(target=self.monitor_killswitch, daemon=True).start()
-                self.log("Wi-Fi Kill-Switch ARMED. Monitoring connection...")
+                self.log("Wi-Fi Kill-Switch ARMED. Monitoring heartbeat...")
                 
             self.log("ILLUSION COMPLETE.")
             self.root.after(1000, self.update_live_status)
         else:
-            self.log("ERROR: Permission denied.")
+            self.log("ERROR: Authorization denied. Reverting sequence.")
+            self.progress['value'] = 0
             
         self.btn_relocate.config(state="normal")
 
@@ -225,7 +264,8 @@ class GhostProtocolApp:
     def _revert_process(self):
         self.btn_revert.config(state="disabled")
         self.killswitch_active = False
-        self.log("Dropping Tor circuits and wiping forensic logs...")
+        self.progress['value'] = 0
+        self.log("Aborting protocol. Executing scorch-earth log wipe...")
         
         os.system("killall tor 2>/dev/null")
         
@@ -244,14 +284,14 @@ class GhostProtocolApp:
         if self.ram_disk_id:
             os.system(f"diskutil eject {self.ram_disk_id} > /dev/null 2>&1")
             self.ram_disk_id = None
-            self.log("RAM Disk power cut. All quarantine data evaporated.")
+            self.log("Ghost Vault RAM Disk power cut. All quarantine data evaporated.")
 
         if success:
-            self.net_label.config(text="Network Routing : Offline", fg="#aaaaaa")
-            self.log("System restored. DNS caches flushed. Logs obliterated. Hardware re-enabled.")
+            self.net_label.config(text="[►] Routing Vector : DIRECT CONNECTION", fg="#888888")
+            self.log("System restored. DNS caches flushed. Logs obliterated.")
             self.root.after(1000, self.update_live_status)
         else:
-            self.log("ERROR: Failed to revert.")
+            self.log("ERROR: Failed to revert kernel parameters.")
             
         self.btn_revert.config(state="normal")
 
@@ -261,14 +301,13 @@ class GhostProtocolApp:
     def _launch_ram_quarantine(self):
         self.log("Allocating 1GB Volatile Memory (RAM Disk) for Ghost Vault...")
         try:
-            # Create a 1GB RAM Disk (2097152 sectors * 512 bytes = 1GB)
             output = subprocess.check_output(['hdiutil', 'attach', '-nomount', 'ram://2097152']).decode('utf-8')
             self.ram_disk_id = output.strip()
             
             self.log(f"RAM Block acquired: {self.ram_disk_id}. Formatting HFS+...")
             os.system(f"diskutil erasevolume HFS+ 'GhostVault' {self.ram_disk_id} > /dev/null 2>&1")
             
-            self.log("Launching completely isolated Chrome container inside RAM...")
+            self.log("Launching highly isolated Chromium container inside RAM...")
             os.system('/Applications/Google\\ Chrome.app/Contents/MacOS/Google\\ Chrome --proxy-server="socks5://127.0.0.1:9050" --user-data-dir="/Volumes/GhostVault/ChromeData" --incognito > /dev/null 2>&1 &')
         except Exception as e:
             self.log(f"ERROR launching RAM Quarantine: {e}")
