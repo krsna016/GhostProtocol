@@ -360,6 +360,8 @@ class GhostProtocolApp:
         success = self.run_admin_command(cmd)
         
         if self.ram_disk_id:
+            os.system('pkill -9 "Google Chrome" 2>/dev/null')
+            time.sleep(1)
             os.system(f"diskutil eject {self.ram_disk_id} > /dev/null 2>&1")
             self.ram_disk_id = None
             self.log("[HW] Ghost Vault RAM Disk power cut. All quarantine data evaporated.")
