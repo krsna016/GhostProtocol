@@ -341,7 +341,10 @@ class GhostProtocolApp:
         self.log("Aborting protocol. Executing scorch-earth log wipe...")
         
         os.system("killall tor 2>/dev/null")
+        os.system("rm -rf ~/.tor/* 2>/dev/null")
+        os.system("echo 'SocksPort 9050' > /opt/homebrew/etc/tor/torrc")
         self.log("[SYS] Tor circuits collapsed. Socket 9050 closed.")
+        self.log("[SYS] Scorch-earth: Tor state files and cryptographic artifacts incinerated.")
         
         cmd = (f"/usr/sbin/networksetup -setsocksfirewallproxystate 'Wi-Fi' off; "
                f"/usr/sbin/networksetup -setdnsservers 'Wi-Fi' 'Empty'; "
