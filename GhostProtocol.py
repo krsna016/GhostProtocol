@@ -264,8 +264,9 @@ class GhostProtocolApp:
             
         self.log(f"Initiating cryptographic relocation to {target_name}...")
         os.system("killall tor 2>/dev/null")
+        torrc_path = "/opt/homebrew/etc/tor/torrc"
         self.write_tor_config(target_info["cc"])
-        os.system("/opt/homebrew/bin/tor > /dev/null 2>&1 &")
+        os.system(f"/opt/homebrew/bin/tor -f {torrc_path} > /dev/null 2>&1 &")
         
         self.log("Igniting The Onion Router daemon [PID mapping...]")
         if self.opt_dpi.get():
