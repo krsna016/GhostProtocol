@@ -235,6 +235,12 @@ class GhostProtocolApp:
     def write_tor_config(self, country_code):
         torrc_path = "/opt/homebrew/etc/tor/torrc"
         config = f"SocksPort 9050\nExitNodes {country_code}\nStrictNodes 1\n"
+        
+        # Performance Tuning Flags
+        config += "AvoidDiskWrites 1\n"
+        config += "CircuitBuildTimeout 15\n"
+        config += "NumEntryGuards 4\n"
+        
         if self.opt_dpi.get():
             config += "ClientTransportPlugin obfs4 exec /opt/homebrew/bin/obfs4proxy\n"
         with open(torrc_path, "w") as f:
