@@ -364,8 +364,8 @@ class GhostProtocolApp:
             self.log("[SYS] Localized DNS Sinkhole activated. Ad/Tracker telemetry blackholed.")
             
         if self.opt_pf.get():
-            # Generate strict PF rules dropping all traffic not destined for 127.0.0.1:9050
-            pf_rule = "block drop all\\npass out route-to lo0 inet proto tcp from any to 127.0.0.1 port 9050\\npass out on en0 inet proto tcp from any to any port {80, 443}\\n"
+            # Generate strict PF rules dropping all traffic not destined for Tor, but whitelisting the local loopback so apps can talk to the proxy
+            pf_rule = "set skip on lo0\\nblock drop all\\npass out on en0 inet proto tcp from any to any port {80, 443, 9001, 9030}\\npass out on en0 inet proto udp from any to any port {53, 443}\\n"
             cmd += f"echo '{pf_rule}' > /tmp/ghost.pf; /sbin/pfctl -e; /sbin/pfctl -f /tmp/ghost.pf; "
             self.log("[SYS] Strict PF Kernel Firewall injected. Deep packet leak prevention active.")
 
