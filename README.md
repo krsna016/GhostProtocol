@@ -41,7 +41,7 @@ graph TD
 - Tor binary (`brew install tor`)
 - Administrator privileges (for raw system manipulation)
 
-## ⚠️ Legal & White-Hat Usage Disclaimer
+## Legal & White-Hat Usage Disclaimer
 This framework is engineered exclusively for **theoretical exploration, academic analysis, and ethical red-team defense operations**. It actively modifies deep macOS network stacks, routing tables, and kernel daemons. 
 
 **Do not deploy this software on production machines or networks where you do not have explicit, written authorization.** The authors and contributors are absolutely not responsible for any misuse, system instability, or illegal activities conducted utilizing this repository. Code is provided "AS-IS" for cybersecurity education.
